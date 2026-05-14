@@ -52,7 +52,7 @@ This database was designed using normalization concepts, relationships, constrai
 
 DBDiagram Link:
 
-[View ER Diagram on dbdiagram.io](https://dbdiagram.io/d/6a0513d454a51d93d3217587)
+[View ER Diagram on dbdiagram.io](https://dbdiagram.io/d/6a0627837a923b9472b9ef6c)
 
 
 # SQL Interview Q&A 1 - 10
