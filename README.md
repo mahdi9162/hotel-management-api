@@ -678,17 +678,6 @@ LIMIT 1 OFFSET 1;
 
 Here we sort salaries from high to low, skip the first one (highest), then take the next one (second highest).
 
-**Method 2 : Using Subquery**
-
-```sql
-SELECT MAX(salary) FROM employees
-WHERE salary < (SELECT MAX(salary) FROM employees);
-```
-
-Here first we find the highest salary, then find the MAX salary that is less than the highest. That's the second highest.
-
-So in short, for second highest salary we can either use LIMIT + OFFSET to skip the top one, or use a subquery to find the max below the highest.
-
 ---
 
 # SQL Practice Task Link
