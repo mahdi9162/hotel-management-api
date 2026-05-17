@@ -909,6 +909,44 @@ So in short, `schema.prisma` has three main sections —
 - datasource = which database and connection URL
 - model = table structure and relations
 
+---
+
+# API Testing Screenshots
+
+## User Register API Result
+
+![Register API](./screenshots/register.png)
+
+---
+
+## Verification Email
+
+![Verification Email](./screenshots/verify_mail.png)
+
+---
+
+## Unverified User Login Attempt
+
+![Unverified Login](./screenshots/unverified-login.png)
+
+---
+
+## User Verification API Result
+
+![Verify API](./screenshots/verify_success.png)
+
+---
+
+## User Login API Result
+
+![Login API](./screenshots/login.png)
+
+---
+
+## Database User Table
+
+![Database Table](./screenshots/neonDB.png)
+
 # SQL Practice Task Link
 
 [Repo Link](https://github.com/mahdi9162/sql-practice.git)
