@@ -28,15 +28,18 @@ This database was designed using normalization concepts, relationships, constrai
 # Database Tables
 
 ## User & Authentication
+
 - users
 - roles
 - userRoles
 
 ## Vendor Management
+
 - vendors
 - vendorKYC
 
 ## Product Management
+
 - products
 - productVariants
 - productImages
@@ -44,6 +47,7 @@ This database was designed using normalization concepts, relationships, constrai
 - brands
 
 ## Review System
+
 - productReviews
 
 ---
@@ -53,7 +57,6 @@ This database was designed using normalization concepts, relationships, constrai
 DBDiagram Link:
 
 [View ER Diagram on dbdiagram.io](https://dbdiagram.io/d/6a0627837a923b9472b9ef6c)
-
 
 # SQL Interview Q&A 1 - 10
 
@@ -335,7 +338,6 @@ Here each server has its own data. No single server holds everything. It improve
 
 So in short, Partitioning splits data inside one server, Sharding splits data across multiple servers. Partitioning is for performance, Sharding is for massive scale.
 
-
 # SQL Interview Q&A 11 - 20
 
 ---
@@ -369,6 +371,7 @@ DROP TABLE users;
 Here the `users` table is completely deleted. Nothing left.
 
 So in short —
+
 - DELETE = specific rows delete (undo possible)
 - TRUNCATE = all rows delete but table exist (undo not possible)
 - DROP = full table delete (nothing left)
@@ -382,6 +385,7 @@ So in short —
 Primary Key is a column that uniquely identify every row of a table.
 
 Rules :
+
 - it can't be NULL
 - it can't be duplicate
 
@@ -405,11 +409,13 @@ So in short, Primary Key uniquely identify every single row in a table.
 **Ans:**
 
 💠 **PRIMARY KEY** :-
+
 - Only one PRIMARY KEY per table
 - Can't be NULL
 - Uniquely identify every row
 
 💠 **UNIQUE KEY** :-
+
 - Multiple UNIQUE KEY allowed in one table
 - Can be NULL (but only once)
 - Also unique, but not the main identifier
@@ -487,6 +493,7 @@ LEFT JOIN orders ON users.id = orders.userId;
 Here all users will show. If a user have no order, their order column will show NULL.
 
 So in short —
+
 - INNER JOIN = only matched rows from both tables
 - LEFT JOIN = all rows from left table + matched rows from right table
 
@@ -554,6 +561,7 @@ id | zipCode       zipCode | city
 ⬆️ Now city is in a separate table.
 
 So in short —
+
 - 1NF = single value in every column
 - 2NF = every column depend on full primary key
 - 3NF = no column depend on another non-key column
@@ -575,6 +583,7 @@ CREATE INDEX idx_email ON users(email);
 Now if you search by email, the database won't check every row. It will use the index and find it fast.
 
 Why we use index :
+
 - ▪️ It make search queries much faster
 - ▪️ It improve performance on large tables
 - ▪️ It help WHERE, JOIN, ORDER BY work efficiently
@@ -609,6 +618,7 @@ HAVING COUNT(*) > 10;
 Here first users are grouped by city, then cities with more than 10 users are shown.
 
 So in short —
+
 - WHERE = filter before grouping (works on rows)
 - HAVING = filter after grouping (works on grouped result)
 
@@ -648,6 +658,7 @@ ROLLBACK;  -- everything is undone, no change happened
 ```
 
 So in short —
+
 - Transaction = group of operations that run together
 - COMMIT = save the changes
 - ROLLBACK = undo the changes
@@ -679,6 +690,224 @@ LIMIT 1 OFFSET 1;
 Here we sort salaries from high to low, skip the first one (highest), then take the next one (second highest).
 
 ---
+
+# Prisma ORM Interview Q&A
+
+---
+
+**1) What is Prisma ORM and why is it used in backend development?**
+
+**Ans:**
+
+Prisma is a tool that help us interact with database using JavaScript/TypeScript code instead of writing raw SQL queries.
+
+ORM means — Object Relational Mapper. It basically map our database tables to code objects, so we don't have to write SQL manually.
+
+Example : Without Prisma we have to write —
+
+```sql
+SELECT * FROM users WHERE id = 1;
+```
+
+But with Prisma we can write —
+
+```ts
+const user = await prisma.user.findUnique({ where: { id: 1 } });
+```
+
+Same result, but now it's just TypeScript code. Much cleaner and easier.
+
+Why we use Prisma in backend :
+
+- ▪️ No need to write raw SQL
+- ▪️ It give us auto-completion and type safety
+- ▪️ It manage database schema easily
+- ▪️ It work with PostgreSQL, MySQL, MongoDB and more
+
+So in short, Prisma is a tool that let us work with database using clean TypeScript code instead of raw SQL queries.
+
+---
+
+**2) What is the difference between findUnique() and findFirst() in Prisma?**
+
+**Ans:**
+
+💠 **findUnique()** :- It find a single row by a unique field. Like `id` or `email`. If the field is not unique, it will throw an error.
+
+```ts
+const user = await prisma.user.findUnique({
+  where: { id: 1 },
+});
+```
+
+Here it search by `id` which is unique. It will return one user or `null`.
+
+💠 **findFirst()** :- It find the first row that match the condition. The field doesn't have to be unique.
+
+```ts
+const user = await prisma.user.findFirst({
+  where: { name: 'Mahdi' },
+});
+```
+
+Here it search by `name` which can be duplicate. It will return the first match or `null`.
+
+So in short —
+
+- findUnique() = search by unique field only (like id, email)
+- findFirst() = search by any field, return first match
+
+---
+
+**3) What is Prisma Migration and why is prisma migrate dev used?**
+
+**Ans:**
+
+Migration means — when we change our database schema (like add a new column, create a new table), we need to apply those changes to the actual database. Migration do this for us.
+
+Think of it like — we wrote the plan in `schema.prisma` file, and migration actually execute that plan in the database.
+
+**Why we use `prisma migrate dev` :**
+
+```bash
+npx prisma migrate dev --name add_email_column
+```
+
+When we run this command —
+
+- ▪️ It create a new migration file with the changes
+- ▪️ It apply those changes to the database automatically
+- ▪️ It also regenerate the Prisma Client so our code stay updated
+
+Example : we added `age` field in schema.prisma —
+
+```prisma
+model User {
+  id    Int    @id @default(autoincrement())
+  name  String
+  age   Int     ← new field added
+}
+```
+
+Now we run `prisma migrate dev` — it will add the `age` column in the real database.
+
+So in short, `prisma migrate dev` apply our schema changes to the actual database and keep everything in sync.
+
+---
+
+**4) Explain the difference between select and include in Prisma with examples.**
+
+**Ans:**
+
+💠 **select** :- It let us choose which specific fields we want to return. Only those fields will come — nothing else.
+
+```ts
+const user = await prisma.user.findUnique({
+  where: { id: 1 },
+  select: {
+    name: true,
+    email: true,
+  },
+});
+```
+
+Result :
+
+```json
+{ "name": "Mahdi", "email": "m@gmail.com" }
+```
+
+Here only `name` and `email` came. `id` or other fields didn't come cz we didn't select them.
+
+💠 **include** :- It let us include related data from another table. Like bringing related records using Foreign Key relation.
+
+Example : one user has many posts —
+
+```ts
+const user = await prisma.user.findUnique({
+  where: { id: 1 },
+  include: {
+    posts: true,
+  },
+});
+```
+
+Result :
+
+```json
+{
+  "id": 1,
+  "name": "Mahdi",
+  "posts": [
+    { "id": 101, "title": "My first post" },
+    { "id": 102, "title": "My second post" }
+  ]
+}
+```
+
+Here the user came with all their posts included.
+
+So in short —
+
+- select = choose specific fields of the same table
+- include = bring related data from another table
+
+---
+
+**5) What is the purpose of the Prisma schema file (schema.prisma) and what are its main sections?**
+
+**Ans:**
+
+`schema.prisma` is the main configuration file of Prisma. It describe our database structure — what tables we have, what columns they have, and how they are related to each other.
+
+Think of it like a blueprint of our database.
+
+**Main sections of schema.prisma :**
+
+💠 **generator** :- It define what Prisma will generate. We mostly use `prisma-client-js` here — it generate the Prisma Client that we use in our code.
+
+```prisma
+generator client {
+  provider = "prisma-client-js"
+}
+```
+
+💠 **datasource** :- It define which database we are connecting to and the connection URL.
+
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
+
+Here `provider` is the database type (postgresql, mysql, mongodb etc.) and `url` is the connection string we keep in `.env` file.
+
+💠 **model** :- It define our tables and their columns. Each model = one table in the database.
+
+```prisma
+model User {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String @unique
+  posts Post[]
+}
+
+model Post {
+  id     Int  @id @default(autoincrement())
+  title  String
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+}
+```
+
+Here `User` and `Post` are two tables. `Post` has a relation to `User` using Foreign Key.
+
+So in short, `schema.prisma` has three main sections —
+
+- generator = what to generate (Prisma Client)
+- datasource = which database and connection URL
+- model = table structure and relations
 
 # SQL Practice Task Link
 
