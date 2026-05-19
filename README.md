@@ -950,3 +950,7 @@ So in short, `schema.prisma` has three main sections —
 # SQL Practice Task Link
 
 [Repo Link](https://github.com/mahdi9162/sql-practice.git)
+
+# Mongoose Practice Task Link
+
+[Repo Link](https://github.com/mahdi9162/rise-commerce-api-mongoose.git)
